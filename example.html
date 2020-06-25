@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+
+  </body>
+  <script type="module">
+    import Logger from './src/Logger.js';
+    let MyLogger = new Logger({
+      errors: {
+        "SAMPLE_ERROR_1": {
+          "title": "Error 1 title",
+          "message": "Some justification. See log for details.",
+          "severity": "error"
+        },
+        "SAMPLE_ERROR_2": {
+          "title": "Error 2 title",
+          "message": "Some justification. See log for details.",
+          "severity": "warning"
+        },
+        "SAMPLE_ERROR_3": {
+          "title": "Error 3 title",
+          "message": "Some justification. See log for details.",
+          "severity": "info"
+        },
+        "SAMPLE_ERROR_4": {
+          "title": "Error 4 title",
+          "message": "Some justification. See log for details.",
+          "severity": "success"
+        }
+      },
+      notification: null,
+      log: true
+    });
+    MyLogger.raise('SAMPLE_ERROR_1');
+    MyLogger.raise('SAMPLE_ERROR_2');
+    MyLogger.raise('SAMPLE_ERROR_3');        
+    MyLogger.raise('SAMPLE_ERROR_4');
+    MyLogger.raise(new Error('TypeError'));
+
+    const fok = () => {
+      MyLogger.raise(new Error('FokError'));
+    };
+
+    fok();    
+  </script>
+</html>
