@@ -81,29 +81,31 @@ class Logger {
     let severity = '';
     let title = '';
     let message = '';
-    // this._errors doesn't contain the error key ; either a Js error or an unknown error
-    if (this._errors[error] === undefined) {
-      // JavaScript error created with new Error(), that need to contain fileName, message, line and column number
-      let filename = '';
-      if (error.fileName && error.message && error.lineNumber && error.columnNumber) { // Firefox specific
-        filename = error.fileName.match(/\/([^\/]+)\/?$/)[1];
-        severity = 'error';
-        title = `JavaScript error`;
-        message = `${error.message} in file ${filename}:${error.lineNumber}:${error.columnNumber}`;
-      } else if (error.message && error.stack) { // Chrome specific
-        filename = error.stack.split('\n')[error.stack.split('\n').length - 1].match(/\/([^\/]+)\/?$/)[1];
-        severity = 'error';
-        title = `JavaScript error`;
-        message = `${error.message} in file ${filename}`;
-      } else { // Unknown error that do not require any arguments
-        severity = 'error';
-        title = `Unexpected error ${error}`;
-        message = 'The error object sent to Logger.raise() is neither a JavaScript error nor a custom error (with severity, title and message).';
+    if (typeof error === 'object' || typeof error === 'string') {
+      // this._errors doesn't contain the error key ; either a Js error or an unknown error
+      if (this._errors[error] === undefined) {
+        // JavaScript error created with new Error(), that need to contain fileName, message, line and column number
+        let filename = '';
+        if (error.fileName && error.message && error.lineNumber && error.columnNumber) { // Firefox specific
+          filename = error.fileName.match(/\/([^\/]+)\/?$/)[1];
+          severity = 'error';
+          title = `JavaScript error`;
+          message = `${error.message} in file ${filename}:${error.lineNumber}:${error.columnNumber}`;
+        } else if (error.message && error.stack) { // Chrome specific
+          filename = error.stack.split('\n')[error.stack.split('\n').length - 1].match(/\/([^\/]+)\/?$/)[1];
+          severity = 'error';
+          title = `JavaScript error`;
+          message = `${error.message} in file ${filename}`;
+        } else { // Unknown error that do not require any arguments
+          severity = 'error';
+          title = `Unexpected error ${error}`;
+          message = 'The error object sent to Logger.raise() is neither a JavaScript error nor a custom error (with severity, title and message).';
+        }
+      } else { // Custom error that need to be filled with a severity, a title and a message
+        severity = this._errors[error].severity || '';
+        title = this._errors[error].title;
+        message = this._errors[error].message;
       }
-    } else { // Custom error that need to be filled with a severity, a title and a message
-      severity = this._errors[error].severity;
-      title = this._errors[error].title;
-      message = this._errors[error].message;
     }
     // Return error standard properties
     return {
@@ -124,11 +126,11 @@ class Logger {
    * One can find such component <a href="https://github.com/ArthurBeaulieu/Notification.js" alt="notification-js">here</a>.</blockquote>
    * @param {object} errorParameters - The error with Logger standard properties (<code>severity</code>, <code>title</code> and <code>message</code>) */
   _logErrorToNotification(errorParameters) {
-    if (this._notification) {
+    if (this._notification && typeof errorParameters === 'object') {
       this._notification.new({
-        type: errorParameters.severity,
-        title: errorParameters.title,
-        message: errorParameters.message
+        type: errorParameters.severity || 'error',
+        title: errorParameters.title || 'Can\'t get error info',
+        message: errorParameters.message || 'Call for new notification wasn\'t made with arguments'
       });
     }
   }
@@ -144,7 +146,11 @@ class Logger {
    * <code>console.info</code> to also display the stack trace in a <code>console.group</code>.</blockquote>
    * @param {object} errorParameters - The error with Logger standard properties (<code>severity</code>, <code>title</code> and <code>message</code>) */
   _logErrorToConsole(errorParameters) {
-    if (this._log) {
+    if (this._log && typeof errorParameters === 'object') {
+      // Missing mandatory arguments
+      if (!errorParameters.severity && !errorParameters.title && !errorParameters.message) {
+        return;
+      }
       /* Colors to use, extracted from Notification.js (https://github.com/ArthurBeaulieu/Notification.js) */
       const colors = {
         success: 'color: rgb(76, 175, 80);',
@@ -187,15 +193,21 @@ class Logger {
     // Original code from: https://gist.github.com/irisli/716b6dacd3f151ce2b7e
     let caller = (new Error()).stack; // Create error and get its call stack
     // Get last called depending on browser
-    if (browsers.firefox) {
-      caller = caller.split('\n')[3];
-      caller = caller.replace(/@+/, ' '); // Change `@` to `(`
-    } else if (browsers.chrome) {
-      caller = caller.split('\n')[caller.split('\n').length - 2];
-      // Remove Chrome specific strings to match Firefox look and feel (go ff)
-      caller = caller.replace(/^Error\s+/, '');
-      caller = caller.replace(/^\s+at./, '');
-      caller = caller.replace(/[{()}]/g, '');
+    if (typeof browsers === 'object') {
+      if (browsers.firefox) {
+        caller = caller.split('\n')[3];
+        caller = caller.replace(/@+/, ' '); // Change `@` to `(`
+      } else if (browsers.chrome) {
+        caller = caller.split('\n')[caller.split('\n').length - 2];
+        // Remove Chrome specific strings to match Firefox look and feel (go ff)
+        caller = caller.replace(/^Error\s+/, '');
+        caller = caller.replace(/^\s+at./, '');
+        caller = caller.replace(/[{()}]/g, '');
+      } else {
+        return 'Unsupported browser to get the caller name from';
+      }
+    } else {
+      return 'Argument missing, unable to get the caller name on this raise';
     }
 
     return `Raised from function ${caller.charAt(0) === ' ' ? `<anonymous>${caller}`: caller}`;
@@ -226,7 +238,7 @@ class Logger {
     /* If any Notification manager exists, use it with error parameters */
     this._logErrorToNotification(errorParameters)
     /* In debug mode, fill the console with error parameters */
-    this._logErrorToConsole(errorParameters);    
+    this._logErrorToConsole(errorParameters);
   }
 
 
