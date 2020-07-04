@@ -13,8 +13,8 @@
     "dictionaries": ["jsdoc", "closure"]
   },
   "templates": {
-    "name": "CustomEvent.js",
-    "footerText": "CustomEvent.js",
+    "name": "Logger.js",
+    "footerText": "Logger.js",
     "cleverLinks": false,
     "monospaceLinks": false
   },

@@ -9,13 +9,30 @@ const errorValue = {
   "title": "Test error",
   "message": "Do we have to say something here ?"
 };
+const warningValue = {
+  "severity": "warning",
+  "title": "Test warning",
+  "message": "Do we have to say something here ?"
+};
+const infoValue = {
+  "severity": "info",
+  "title": "Test warning",
+  "message": "Do we have to say something here ?"
+};
+const successValue = {
+  "severity": "success",
+  "title": "Test warning",
+  "message": "Do we have to say something here ?"
+};
 const error = {
-  "TEST_ERROR": errorValue
+  "TEST_ERROR": errorValue,
+  "TEST_WARNING": warningValue,
+  "TEST_INFO": infoValue,
+  "TEST_SUCCESS": successValue
 };
 const notification = {
-  new: (severity, title, message) => { console.log('Notification.new called'); }
+  new: (severity, title, message) => { /*console.log('Notification.new called');*/ }
 };
-
 const browsers = {
   firefox: /firefox/i.test(navigator.userAgent),
   chrome: /chrome/i.test(navigator.userAgent) && /google inc/i.test(navigator.vendor)
@@ -33,7 +50,7 @@ describe('Logger unit test', () => {
     expect(AppLogger._errors).toEqual({});
     expect(AppLogger._notification).toEqual(null);
     expect(AppLogger._log).toEqual(true);
-    expect(AppLogger.version).toEqual('0.0.1');
+    expect(AppLogger.version).toEqual('1.0.0');
     AppLogger.destroy();
     AppLogger = null;
     done();
@@ -51,7 +68,7 @@ describe('Logger unit test', () => {
     expect(AppLogger._errors).toEqual(error);
     expect(AppLogger._notification).toEqual(null);
     expect(AppLogger._log).toEqual(true);
-    expect(AppLogger.version).toEqual('0.0.1');
+    expect(AppLogger.version).toEqual('1.0.0');
     AppLogger.destroy();
     AppLogger = null;
     done();
@@ -69,7 +86,7 @@ describe('Logger unit test', () => {
     expect(AppLogger._errors).toEqual({});
     expect(AppLogger._notification).toEqual(notification);
     expect(AppLogger._log).toEqual(true);
-    expect(AppLogger.version).toEqual('0.0.1');
+    expect(AppLogger.version).toEqual('1.0.0');
     AppLogger.destroy();
     AppLogger = null;
     done();
@@ -87,7 +104,7 @@ describe('Logger unit test', () => {
     expect(AppLogger._errors).toEqual({});
     expect(AppLogger._notification).toEqual(null);
     expect(AppLogger._log).toEqual(false);
-    expect(AppLogger.version).toEqual('0.0.1');
+    expect(AppLogger.version).toEqual('1.0.0');
     AppLogger.destroy();
     AppLogger = null;
     done();
@@ -103,7 +120,7 @@ describe('Logger unit test', () => {
     expect(AppLogger._errors).toEqual({});
     expect(AppLogger._notification).toEqual(null);
     expect(AppLogger._log).toEqual(true);
-    expect(AppLogger.version).toEqual('0.0.1');
+    expect(AppLogger.version).toEqual('1.0.0');
     // Reinstantiation, will not update any properties
     AppLogger = new Logger({
       errors: error,
@@ -117,7 +134,7 @@ describe('Logger unit test', () => {
     expect(AppLogger._errors).toEqual({});
     expect(AppLogger._notification).toEqual(null);
     expect(AppLogger._log).toEqual(true);
-    expect(AppLogger.version).toEqual('0.0.1');
+    expect(AppLogger.version).toEqual('1.0.0');
     AppLogger.destroy();
     AppLogger = null;
     done();
@@ -261,7 +278,9 @@ describe('Logger unit test', () => {
   it('Private method _getCallerName with wrong arguments', done => {
     AppLogger = new Logger();
     // No argument provided
-    expect(AppLogger._getCallerName()).toEqual('Argument missing, unable to get the caller name on this raise');
+    expect(AppLogger._getCallerName()).toEqual('Argument error, unable to get the caller name on this raise');
+    // Wrong type argument
+    expect(AppLogger._getCallerName('Not a string')).toEqual('Argument error, unable to get the caller name on this raise');
     // Unsupported browser
     expect(AppLogger._getCallerName({ SaFArI: true })).toEqual('Unsupported browser to get the caller name from');
     AppLogger.destroy();
@@ -271,9 +290,40 @@ describe('Logger unit test', () => {
 
 
   it('Public method raise', done => {
-    AppLogger = new Logger();
+    AppLogger = new Logger({
+      errors: error
+    });
+    spyOn(AppLogger, '_buildErrorInfo').and.callThrough();
+    spyOn(AppLogger, '_logErrorToNotification').and.callThrough();
+    spyOn(AppLogger, '_logErrorToConsole').and.callThrough();
+    spyOn(console, 'log').and.callThrough();
+    spyOn(console, 'info').and.callThrough();
+    spyOn(console, 'warn').and.callThrough();
+    spyOn(console, 'error').and.callThrough();
     // No arguments provided
     AppLogger.raise();
+    expect(AppLogger._buildErrorInfo).toHaveBeenCalled();
+    expect(AppLogger._logErrorToNotification).toHaveBeenCalled();
+    expect(AppLogger._logErrorToConsole).toHaveBeenCalled();
+    expect(console.log).not.toHaveBeenCalled();
+    expect(console.info).not.toHaveBeenCalled();
+    expect(console.warn).not.toHaveBeenCalled();
+    expect(console.error).not.toHaveBeenCalled();
+    // Javascript error
+    AppLogger.raise(new Error('App error'));
+    expect(console.error).toHaveBeenCalled();
+    // Custom error
+    AppLogger.raise("TEST_ERROR");
+    expect(console.error).toHaveBeenCalled();
+    // Custom warning
+    AppLogger.raise("TEST_WARNING");
+    expect(console.warn).toHaveBeenCalled();
+    // Custom info
+    AppLogger.raise("TEST_INFO");
+    expect(console.info).toHaveBeenCalled();
+    // Custom success
+    AppLogger.raise("TEST_SUCCESS");
+    expect(console.log).toHaveBeenCalled();
     AppLogger.destroy();
     AppLogger = null;
     done();

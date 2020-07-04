@@ -2,11 +2,22 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <title>Logger.js 1.0.0 - Demo</title>
+    <style>
+      html, body { align-items: center; display: flex; flex-direction: column; font-family: sans-serif; height: 100%; justify-content: center; margin: 0; width: 100%; }
+      html { width: 100%; }
+      body { text-align: center; width: 80%; }
+      button { border: solid 1px grey; border-radius: 5px; cursor: pointer; margin: 5px; padding: 5px 10px; }
+      button[disabled] { cursor: not-allowed; }
+    </style>
   </head>
   <body>
-
+    <a href="https://github.com/ArthurBeaulieu/Logger.js" target="_blank" style="position: absolute; left: 0; top: 0;"><img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_left_darkblue_121621.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <h1>Logger.js - Version 1.0.0</h1>
+    <h3>Sample errors are generated in the console</h3>
+    <h3>Load this page on a web server, or disable temporally cors policy to make it work.</h3>
   </body>
-  <script type="module">
+  <script type="module"> // Need to disable cors to properly load module
     import Logger from './src/Logger.js';
     let MyLogger = new Logger({
       errors: {

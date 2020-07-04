@@ -44,7 +44,7 @@ class Logger {
     this._log = options.log;
     /** @public
      * @member {string} - Component version */
-    this.version = '0.0.1';    
+    this.version = '1.0.0';
     return this;
   }
 
@@ -207,7 +207,7 @@ class Logger {
         return 'Unsupported browser to get the caller name from';
       }
     } else {
-      return 'Argument missing, unable to get the caller name on this raise';
+      return 'Argument error, unable to get the caller name on this raise';
     }
 
     return `Raised from function ${caller.charAt(0) === ' ' ? `<anonymous>${caller}`: caller}`;
