@@ -38,6 +38,7 @@ const browsers = {
   chrome: /chrome/i.test(navigator.userAgent) && /google inc/i.test(navigator.vendor)
 };
 
+
 describe('Logger unit test', () => {
 
 

@@ -10,7 +10,7 @@ module.exports = env => {
   return {
     mode: env.dev === 'true' ? 'development' : 'production',
     watch: env.dev === 'true',
-    entry: ['./src/Logger.js'],
+    entry: ['src/Logger.js'],
     stats: {
       warnings: env.dev === 'true',
     },

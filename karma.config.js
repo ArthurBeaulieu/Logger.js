@@ -9,10 +9,10 @@ module.exports = config => {
         random: !config.dev // Randomized in !dev mode
       }
     },
-    files: ['./test/testContext.js'],
+    files: ['test/testContext.js'],
     reporters: ['progress'],
     preprocessors: {
-      './test/testContext.js': ['webpack']
+      'test/testContext.js': ['webpack']
     },
     babelPreprocessor: {
       options: {

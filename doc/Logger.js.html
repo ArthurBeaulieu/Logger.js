@@ -61,11 +61,10 @@ class Logger {
    * JavaScript code. Errors can be raised from JavaScript errors (&lt;code>new Error()&lt;/code>), or using a custom error
    * format, with a severity, title and message. It is also possible to pass a notification manager object to handle
    * those error either in console and in UI. The recommended manager to use for notification can be found at
-   * &lt;a href="https://github.com/ArthurBeaulieu/Notification.js" alt="notification-js">
-   * https://github.com/ArthurBeaulieu/Notification.js&lt;/a>. You can otherwise implement you system, but it as to take
-   * a type (severity), a title and a message ; for further information, refer to the &lt;code>_logErrorToNotification&lt;/code>
-   * documentation. For source code, please go to &lt;a href="https://github.com/ArthurBeaulieu/Logger.js" alt="logger-js">
-   * https://github.com/ArthurBeaulieu/Logger.js&lt;/a>&lt;/blockquote>
+   * &lt;a href="https://github.com/ArthurBeaulieu/Notification.js" alt="notification-js">Notification.js&lt;/a>. You can
+   * otherwise implement you system, but it as to take a type (severity), a title and a message ; for further information,
+   * refer to the &lt;code>_logErrorToNotification&lt;/code> documentation. For source code, please go to
+   * &lt;a href="https://github.com/ArthurBeaulieu/Logger.js" alt="logger-js">Logger.js&lt;/a>&lt;/blockquote>
    * @param {object} [options={}] - The Logger object, not mandatory but it is recommended to provide one for full features
    * @param {object} [options.errors={}] - The custom errors, JSON style, with key being the error name and value being
    * an object with a &lt;code>severity&lt;/code>, a &lt;code>title&lt;/code> and a &lt;code>message&lt;/code> property (all strings)
@@ -153,8 +152,8 @@ class Logger {
         }
       } else { // Custom error that need to be filled with a severity, a title and a message
         severity = this._errors[error].severity || '';
-        title = this._errors[error].title;
-        message = this._errors[error].message;
+        title = this._errors[error].title || '';
+        message = this._errors[error].message || '';
       }
     }
     // Return error standard properties

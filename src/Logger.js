@@ -11,11 +11,10 @@ class Logger {
    * JavaScript code. Errors can be raised from JavaScript errors (<code>new Error()</code>), or using a custom error
    * format, with a severity, title and message. It is also possible to pass a notification manager object to handle
    * those error either in console and in UI. The recommended manager to use for notification can be found at
-   * <a href="https://github.com/ArthurBeaulieu/Notification.js" alt="notification-js">
-   * https://github.com/ArthurBeaulieu/Notification.js</a>. You can otherwise implement you system, but it as to take
-   * a type (severity), a title and a message ; for further information, refer to the <code>_logErrorToNotification</code>
-   * documentation. For source code, please go to <a href="https://github.com/ArthurBeaulieu/Logger.js" alt="logger-js">
-   * https://github.com/ArthurBeaulieu/Logger.js</a></blockquote>
+   * <a href="https://github.com/ArthurBeaulieu/Notification.js" alt="notification-js">Notification.js</a>. You can
+   * otherwise implement you system, but it as to take a type (severity), a title and a message ; for further information,
+   * refer to the <code>_logErrorToNotification</code> documentation. For source code, please go to
+   * <a href="https://github.com/ArthurBeaulieu/Logger.js" alt="logger-js">Logger.js</a></blockquote>
    * @param {object} [options={}] - The Logger object, not mandatory but it is recommended to provide one for full features
    * @param {object} [options.errors={}] - The custom errors, JSON style, with key being the error name and value being
    * an object with a <code>severity</code>, a <code>title</code> and a <code>message</code> property (all strings)
@@ -103,8 +102,8 @@ class Logger {
         }
       } else { // Custom error that need to be filled with a severity, a title and a message
         severity = this._errors[error].severity || '';
-        title = this._errors[error].title;
-        message = this._errors[error].message;
+        title = this._errors[error].title || '';
+        message = this._errors[error].message || '';
       }
     }
     // Return error standard properties

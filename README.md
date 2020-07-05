@@ -33,6 +33,15 @@ const appLogger = new Logger({
 });
 ```
 
+The Logger is now ready to raise errors :
+
+```Javascript
+/* Raise standard JavaScript errors */
+appLogger.raise(new Error('Unicorn error'));
+/* Raise custom error sent in constructor by its key */
+appLogger.raise("MY_ERROR");
+```
+
 # Advanced usage
 
 This component is also made to work with a notification handler, to have a single point of entry for both console error and UI output. Especially with [Notification.js](https://github.com/ArthurBeaulieu/Notification.js) that is able to work out of the box, but any notification handler that offers a `new()` method with `type`, `title` and `message` arguments will do the trick (see documentation for further details). Here is how to provide such notification handler :
@@ -52,5 +61,15 @@ Notification.new = options => {
   // string : options.message
 }
 ```
+
+# Development
+
+If you clone this repository, you can `npm install` to install development dependencies. This will allow you to build dist file, run the component tests or generate the documentation ;
+
+- `npm run build` to generate the minified file ;
+- `npm run dev` to watch for any change in source code ;
+- `npm run doc` to generate documentation ;
+- `npm run test` to perform all test at once ;
+- `npm run testdev` to keep browsers open to debug tests ;
 
 If you have any question or idea, feel free to DM or open an issue (or even a PR, who knows) ! I'll be glad to answer your request. 

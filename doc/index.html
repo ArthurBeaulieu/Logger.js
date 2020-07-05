@@ -57,7 +57,64 @@
 
 
     <section>
-        <article class="readme"><h1>Logger.js</h1></article>
+        <article class="readme"><h1>Logger.js</h1>
+<p><img src="https://badgen.net/badge/version/1.0.0/blue" alt="">
+<a href="https://github.com/ArthurBeaulieu/Logger.js/blob/master/LICENSE.md"><img src="https://img.shields.io/github/license/ArthurBeaulieu/Logger.js.svg" alt="License"></a></p>
+<p><img src="https://badgen.net/badge/documentation/written/green" alt="">
+<img src="https://badgen.net/badge/test/passed/green" alt="">
+<img src="https://badgen.net/badge/dependencies/none/green" alt=""></p>
+<p><code>Logger.js</code> is a JavaScript ES6 module that offers a unified console output across Firefox and Chromium based browsers. It handles standard errors raised for example, with <code>new Error()</code>, and is also able to handle custom errors to fit you application needs.</p>
+<p>With ~4Ko minified, Logger.js is designed to be stable and remain as light as possible. It is meant to be used application wide to abstract this output layer into basic calls.</p>
+<h1>Get Started</h1>
+<p>This repository was made to store documentation, test bench and source code. If you want to include this component in your project, you either need the <code>src/Logger.js</code> file if you have an assets bundler in your project, or use the <code>dist/Logger.min.js</code> to use the minified component. This minified file is compiled in ES5 JavaScript for compatibility reasons. The unminified file is, in the contrary, coded in ES6 JavaScript.</p>
+<p><code>Logger.js</code> can be used to only handle console output, handling either JavaScript error and custom errors. Simply use component as follows :</p>
+<pre class="prettyprint source lang-javascript"><code>/* Import the Js component */
+import Logger from 'src/Logger.js';
+/* Create an event handler with no arguments for JavaScript errors only */
+const appLogger = new Logger();
+/* ...Or, if you want have custom errors for your app */
+const appLogger = new Logger({
+  errors: {
+    &quot;MY_ERROR&quot;: {
+      &quot;severity&quot;: &quot;error&quot;,
+      &quot;title&quot;: &quot;Title&quot;,
+      &quot;message&quot;: &quot;Message&quot;
+    }/* ... */
+  }
+});
+</code></pre>
+<p>The Logger is now ready to raise errors :</p>
+<pre class="prettyprint source lang-Javascript"><code>/* Raise standard JavaScript errors */
+appLogger.raise(new Error('Unicorn error'));
+/* Raise custom error sent in constructor by its key */
+appLogger.raise(&quot;MY_ERROR&quot;);
+</code></pre>
+<h1>Advanced usage</h1>
+<p>This component is also made to work with a notification handler, to have a single point of entry for both console error and UI output. Especially with <a href="https://github.com/ArthurBeaulieu/Notification.js">Notification.js</a> that is able to work out of the box, but any notification handler that offers a <code>new()</code> method with <code>type</code>, <code>title</code> and <code>message</code> arguments will do the trick (see documentation for further details). Here is how to provide such notification handler :</p>
+<pre class="prettyprint source lang-javascript"><code>/* Import the Js components */
+import Notification from 'my/notification/handler.js';
+import Logger from 'src/Logger.js';
+/* Just send the notification handler to the constructor */
+const appLogger = new Logger({
+  notification: Notification
+});
+/* Notification handler must implement the following method */
+Notification.new = options => {
+  // string : options.type
+  // string : options.title
+  // string : options.message
+}
+</code></pre>
+<h1>Development</h1>
+<p>If you clone this repository, you can <code>npm install</code> to install development dependencies. This will allow you to build dist file, run the component tests or generate the documentation ;</p>
+<ul>
+<li><code>npm run build</code> to generate the minified file ;</li>
+<li><code>npm run dev</code> to watch for any change in source code ;</li>
+<li><code>npm run doc</code> to generate documentation ;</li>
+<li><code>npm run test</code> to perform all test at once ;</li>
+<li><code>npm run testdev</code> to keep browsers open to debug tests ;</li>
+</ul>
+<p>If you have any question or idea, feel free to DM or open an issue (or even a PR, who knows) ! I'll be glad to answer your request.</p></article>
     </section>
 
 
