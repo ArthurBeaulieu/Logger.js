@@ -49,7 +49,7 @@ class Logger {
     this._log = options.log;
     /** @public
      * @member {string} - Component version */
-    this.version = '1.1.0';
+    this.version = '1.2.0';
     return this;
   }
 
